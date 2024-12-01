@@ -95,13 +95,63 @@ struct pare getBallPosition(int ballPosition_X, int ballPosition_Y, int key1_pos
     
     if (ballPosition_Y == FIELD_HEIGTH || ballPosition_Y == 1)
             fr.y = fr.y * -1;
-    if ((ballPosition_X == KEY1_X + 1 && (ballPosition_Y > key1_position - 3 && ballPosition_Y <= key1_position)) || (ballPosition_X == KEY2_X - 1 && (ballPosition_Y > key2_position - 3 && ballPosition_Y <= key2_position)))
-            fr.x = fr.x * -1; 
-    /*if ((fr.x == 1 && fr.y == 1) && (ballPosition_Y == key2_position - 2)){
+    //if ((ballPosition_X == KEY1_X + 1 && (ballPosition_Y > key1_position - 3 && ballPosition_Y <= key1_position)) || (ballPosition_X == KEY2_X - 1 && (ballPosition_Y > key2_position - 3 && ballPosition_Y <= key2_position)))
+      //      fr.x = fr.x * -1; 
+    else if ((ballPosition_X == KEY2_X - 1 && (fr.x == 1 && fr.y == 1) && (ballPosition_Y == key2_position - 2))){
         fr.x *= -1;
         fr.y *= -1;
     }
-    if ((fr.x == 1 && fr.y == 1) && (ballPosition_Y == key)) */
+    else if ((ballPosition_X == KEY2_X - 1 && (fr.x == 1 && fr.y == 1) && (ballPosition_Y == key2_position - 1))){
+        fr.x *= -1;
+        fr.y = 0;
+    }
+    else if ((ballPosition_X == KEY2_X - 1 && (fr.x == 1 && fr.y == 1) && (ballPosition_Y == key2_position))){     //ball snizu vverh
+        fr.x *= -1;
+    }
+    else if ((ballPosition_X == KEY2_X - 1 && (fr.x == 1 && fr.y == -1) && (ballPosition_Y == key2_position - 2))){
+        fr.x *= -1;
+    }
+    else if ((ballPosition_X == KEY2_X - 1 && (fr.x == 1 && fr.y == -1) && (ballPosition_Y == key2_position - 1))){
+        fr.x *= -1;
+        fr.y = 0;
+    }
+    else if ((ballPosition_X == KEY2_X - 1 && (fr.x == 1 && fr.y == -1) && (ballPosition_Y == key2_position))){
+        fr.x *= -1;
+        fr.y *= -1;
+    }
+    else if ((ballPosition_X == KEY1_X + 1 && (fr.x == -1 && fr.y == 1) && (ballPosition_Y == key1_position - 2))){
+        fr.x *= -1;
+        fr.y *= -1;
+    }
+    else if ((ballPosition_X == KEY1_X + 1 && (fr.x == -1 && fr.y == 1) && (ballPosition_Y == key1_position - 1))){
+        fr.x *= -1;
+        fr.y = 0;
+    }
+    else if ((ballPosition_X == KEY1_X + 1 && (fr.x == -1 && fr.y == 1) && (ballPosition_Y == key1_position))){
+        fr.x *= -1;
+    }
+    else if ((ballPosition_X == KEY1_X + 1 && (fr.x == -1 && fr.y == -1) && (ballPosition_Y == key1_position - 2))){
+        fr.x *= -1;
+    }
+    else if ((ballPosition_X == KEY1_X + 1 && (fr.x == -1 && fr.y == -1) && (ballPosition_Y == key1_position - 1))){
+        fr.x *= -1;
+        fr.y = 0;
+    }
+    else if ((ballPosition_X == KEY1_X + 1 && (fr.x == -1 && fr.y == -1) && (ballPosition_Y == key1_position))){
+        fr.x *= -1;
+        fr.y *= -1;
+    }
+    else if (fr.y == 0 && ((ballPosition_X == KEY1_X + 1 && ballPosition_Y == key1_position - 1) || (ballPosition_X == KEY2_X - 1 && ballPosition_Y == key2_position - 1))){
+       fr.x *= -1;
+    }
+    else if (fr.y == 0 && ((ballPosition_X == KEY1_X + 1 && ballPosition_Y == key1_position - 2) || (ballPosition_X == KEY2_X - 1 && ballPosition_Y == key2_position - 2))){
+        fr.x *= -1;
+        fr.y --;
+    }
+    else if (fr.y == 0 && ((ballPosition_X == KEY1_X + 1 && ballPosition_Y == key1_position) || (ballPosition_X == KEY2_X - 1 && ballPosition_Y == key2_position))){
+        fr.x *= -1;
+        fr.y ++;
+    }
             return fr;
 }
 
@@ -134,18 +184,26 @@ int main() {
 
     vector.x = 1;
     vector.y = 1;
+    int restart = 1;
 
 #ifdef DRAWFIELD_DEBUG 
     drawField(key1_position, key2_position, ballPosition_X, ballPosition_Y, score.x, score.y);
     printf("pole(10, 20, 56, 12, 7, 12);\n");
     while (1){
-        click = _getch();
-        if (click == 'a' || click == 'z'){
-            key1_position = getKeyPosition(key1_position, click);
+        if (kbhit()){
+            click = _getch();
+        
+            if (click == 'a' || click == 'z'){
+                key1_position = getKeyPosition(key1_position, click);
+            }
+            else if (click == 'k' || click == 'm'){ 
+                key2_position = getKeyPosition(key2_position, click);
+            }
         }
-        else if (click == 'k' || click == 'm'){ 
-            key2_position = getKeyPosition(key2_position, click);
-        }
+            char stopGame = 'q';
+            char newGame = 'n';
+            char pause = ' ';
+        
         /*
         pasha = getBallPosition(ballPosition_X, ballPosition_Y, key1_position, key2_position);
         ballPosition_X = ballPosition_X + vector.x;
@@ -173,16 +231,43 @@ int main() {
         vector.x = -1;
         vector.y = 1;
     }
-         drawField(key1_position, key2_position, ballPosition_X, ballPosition_Y, score.x, score.y);
+        if (click != pause || score.x != 2 || score.y != 2){
+            drawField(key1_position, key2_position, ballPosition_X, ballPosition_Y, score.x, score.y);
+        }
+        if (score.x == 2){
+            printf("Player 1 win\n Press q for quit or press n for new game\n");
+        }    
+        else if (score.y == 2){
+            printf("Player 2 win\n Press q for quit or press n for new game\n");
+        }
+        if (click == stopGame) {
+                    break;
+        } else if (click == newGame) {
+                    restart = 1;  // Устанавливаем флаг перезапуска
+                    break;
+                }
+            
         
+
+        // Сбрасываем состояние игры при перезапуске
+        if (restart) {
+            key1_position = 10;
+            key2_position = 70;
+            ballPosition_X = 40;
+            ballPosition_Y = 13;
+            vector.x = 1;
+            vector.y = 1;
+            score.x = 0;
+            score.y = 0;
+        }
+    
    
 
 
                  //тут мы просто вызываем результат работы функции, подставляя нужные переменные
         //printf("pole(24, 7, 43, 8, 1, 17);\n");
-        char stopGame = 'q';
-        if (click == stopGame)
-            break;
+        
+        
     }
     
     
